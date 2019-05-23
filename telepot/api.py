@@ -13,6 +13,15 @@ urllib3.disable_warnings()
 _default_pool_params = dict(num_pools=3, maxsize=10, retries=3, timeout=30)
 _onetime_pool_params = dict(num_pools=1, maxsize=1, retries=3, timeout=30)
 
+try:
+    # Compiled with SSL
+    import ssl
+    _ssl_pool_params = dict(assert_hostname=False, cert_reqs=ssl.CERT_NONE)
+    _default_pool_params.update(**_ssl_pool_params)
+    _onetime_pool_params.update(**_ssl_pool_params)
+except ImportError:
+    pass
+
 _pools = {
     'default': urllib3.PoolManager(**_default_pool_params),
 }
